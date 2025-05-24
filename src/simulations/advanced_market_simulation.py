@@ -45,7 +45,7 @@ class MarketSimulation:
         for t in range(1, n):
             dW = np.random.normal(0, np.sqrt(dt))
             dZ = np.random.normal(0, np.sqrt(dt))
-            V[t] = max(V[t-1] + kappa * (theta - V[t-1]) * dt + xi * np.sqrt(V[t-1]) * dZ, 0)
+            V[t] = max(V[t-1] + kappa * (theta - V[t-1]) * dt + xi * np.sqrt(max(V[t-1], 0)) * dZ, 1e-6)  # Ensure variance is non-zero
             X[t] = X[t-1] + mu * X[t-1] * dt + np.sqrt(V[t]) * X[t-1] * dW
         return X, V
 

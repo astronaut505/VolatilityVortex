@@ -4,12 +4,16 @@
 import csv
 import numpy as np
 import pandas as pd
+import sys
+import os
 from simulations.advanced_market_simulation import MarketSimulation
 from strategies.enhanced_pricing_strategy import PricingStrategy
 from executions.advanced_order_execution import OrderExecution
 from core.risk_management import RiskManagement
 from utils.data_analysis import DataAnalysis
 from utils.extensibility import Extensibility
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 def run_simulation():
     """
