@@ -30,6 +30,12 @@ def run_simulation():
     jump_diffusion = MarketSimulation.jump_diffusion_model(mu=0.1, sigma=1.5, lambda_=0.5, jump_mean=5, jump_std=2, X0=100, T=T, dt=dt)
     heston_prices, heston_vols = MarketSimulation.heston_model(mu=0.05, kappa=2.0, theta=0.04, xi=0.1, V0=0.04, X0=100, T=T, dt=dt)
 
+    # Integrate ABM/GBM and Poisson-based trade arrivals
+    abm_prices = MarketSimulation.arithmetic_brownian_motion(mu=0.1, sigma=1.0, X0=100, T=T, dt=dt)
+    gbm_prices = MarketSimulation.geometric_brownian_motion(mu=0.1, sigma=1.0, X0=100, T=T, dt=dt)
+
+    trade_arrivals = OrderExecution.simulate_trade_arrivals(lambda_rate=0.5, T=T, dt=dt)
+
     # Pricing Strategy (Dummy Example)
     features = np.array([1.0, 2.0, 3.0])
     class DummyModel:
@@ -57,8 +63,8 @@ def run_simulation():
     # Generate CSV Output
     with open("simulation_results.csv", "w", newline="") as csvfile:
         fieldnames = [
-            "Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols", "Bid", "Ask",
-            "Adjusted_Size", "Sharpe_Ratio", "Sortino_Ratio", "Combined_Output", "Behavioral_Impact_Score",
+            "Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols", "ABM_Prices", "GBM_Prices", "Trade_Arrivals",
+            "Bid", "Ask", "Adjusted_Size", "Sharpe_Ratio", "Sortino_Ratio", "Combined_Output", "Behavioral_Impact_Score",
             "Avg_Spread", "Avg_Depth"
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -71,6 +77,9 @@ def run_simulation():
                 "Jump_Diffusion": jump_diffusion[t],
                 "Heston_Prices": heston_prices[t],
                 "Heston_Vols": heston_vols[t],
+                "ABM_Prices": abm_prices[t],
+                "GBM_Prices": gbm_prices[t],
+                "Trade_Arrivals": trade_arrivals[t],
                 "Bid": bid,
                 "Ask": ask,
                 "Adjusted_Size": adjusted_size,
@@ -83,6 +92,33 @@ def run_simulation():
             })
 
     print("Simulation completed. Results saved to simulation_results.csv.")
+
+def optimize_market_maker_objective():
+    """
+    Optimizes the market maker's objective function by calculating optimal quote distances.
+    """
+    mid_price = 100  # Example mid-price
+    inventory_penalty = 0.1
+    risk_aversion = 0.5
+
+    def execution_prob_func(delta):
+        """
+        Example execution probability function.
+        """
+        return np.exp(-delta)
+
+    optimal_distances = OrderExecution.calculate_optimal_quote_distances(
+        mid_price, execution_prob_func, inventory_penalty, risk_aversion
+    )
+
+    if optimal_distances:
+        delta_b, delta_a = optimal_distances
+        print(f"Optimal Bid Distance: {delta_b}, Optimal Ask Distance: {delta_a}")
+    else:
+        print("Failed to optimize quote distances.")
+
+# Call the optimization function
+optimize_market_maker_objective()
 
 if __name__ == "__main__":
     run_simulation()
