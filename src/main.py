@@ -111,7 +111,7 @@ def optimize_market_maker_objective():
         mid_price, execution_prob_func, inventory_penalty, risk_aversion
     )
 
-    if optimal_distances:
+    if optimal_distances is not None and all(optimal_distances):
         delta_b, delta_a = optimal_distances
         print(f"Optimal Bid Distance: {delta_b}, Optimal Ask Distance: {delta_a}")
     else:
