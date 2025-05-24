@@ -1,12 +1,15 @@
-# Main Script for Running Simulations
-# This script integrates all components, runs simulations, and generates CSV outputs.
+# Enhanced Main Script for Running Simulations
+# This script integrates all components, runs simulations, and generates comprehensive outputs.
 
 import csv
 import numpy as np
+import pandas as pd
 from simulations.advanced_market_simulation import MarketSimulation
 from strategies.enhanced_pricing_strategy import PricingStrategy
 from executions.advanced_order_execution import OrderExecution
 from core.risk_management import RiskManagement
+from utils.data_analysis import DataAnalysis
+from utils.extensibility import Extensibility
 
 def run_simulation():
     """
@@ -38,9 +41,22 @@ def run_simulation():
     returns = np.random.normal(0.02, 0.01, time_steps)
     metrics = RiskManagement.risk_adjusted_metrics(returns, risk_free_rate=0.01)
 
+    # Extensibility (Dummy Examples)
+    combined_output = Extensibility.hybrid_model(traditional_model_output=0.05, ml_model_output=0.08, weight=0.6)
+    impact_score = Extensibility.behavioral_analysis(trader_actions=[1, -1, 1, 1, -1], market_conditions=[0.5, -0.2, 0.3, 0.4, -0.1])
+    avg_spread, avg_depth = Extensibility.microstructure_analysis(order_book_data=[
+        {"bid": 100, "ask": 101, "depth": 500},
+        {"bid": 99.5, "ask": 100.5, "depth": 450},
+        {"bid": 100.2, "ask": 101.2, "depth": 480}
+    ])
+
     # Generate CSV Output
     with open("simulation_results.csv", "w", newline="") as csvfile:
-        fieldnames = ["Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols", "Bid", "Ask", "Adjusted_Size", "Sharpe_Ratio", "Sortino_Ratio"]
+        fieldnames = [
+            "Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols", "Bid", "Ask",
+            "Adjusted_Size", "Sharpe_Ratio", "Sortino_Ratio", "Combined_Output", "Behavioral_Impact_Score",
+            "Avg_Spread", "Avg_Depth"
+        ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
@@ -55,7 +71,11 @@ def run_simulation():
                 "Ask": ask,
                 "Adjusted_Size": adjusted_size,
                 "Sharpe_Ratio": metrics["Sharpe Ratio"],
-                "Sortino_Ratio": metrics["Sortino Ratio"]
+                "Sortino_Ratio": metrics["Sortino Ratio"],
+                "Combined_Output": combined_output,
+                "Behavioral_Impact_Score": impact_score,
+                "Avg_Spread": avg_spread,
+                "Avg_Depth": avg_depth
             })
 
     print("Simulation completed. Results saved to simulation_results.csv.")
