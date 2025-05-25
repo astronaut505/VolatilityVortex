@@ -1,5 +1,5 @@
 # Advanced Market Simulation Engine
-# This script implements advanced market simulation models, including Ornstein-Uhlenbeck, Jump Diffusion, Heston, ABM, and GBM models.
+# This script implements advanced market simulation models, including Ornstein-Uhlenbeck, Jump Diffusion, Heston, and GBM models.
 
 import numpy as np
 
@@ -50,26 +50,6 @@ class MarketSimulation:
         return X, V
 
     @staticmethod
-    def arithmetic_brownian_motion(mu, sigma, X0, T, dt):
-        """
-        Simulates Arithmetic Brownian Motion (ABM).
-
-        :param mu: Drift.
-        :param sigma: Volatility.
-        :param X0: Initial price.
-        :param T: Total time.
-        :param dt: Time step.
-        :return: Simulated price path.
-        """
-        n = int(T / dt)
-        X = np.zeros(n)
-        X[0] = X0
-        for t in range(1, n):
-            dW = np.random.normal(0, np.sqrt(dt))
-            X[t] = X[t-1] + mu * dt + sigma * dW
-        return X
-
-    @staticmethod
     def geometric_brownian_motion(mu, sigma, X0, T, dt):
         """
         Simulates Geometric Brownian Motion (GBM).
@@ -118,10 +98,6 @@ if __name__ == "__main__":
     # Heston Model Example
     heston_prices, heston_vols = MarketSimulation.heston_model(mu=0.05, kappa=2.0, theta=0.04, xi=0.1, V0=0.04, X0=100, T=1.0, dt=0.01)
     print("Heston Model Simulated.")
-
-    # ABM Example
-    abm_process = MarketSimulation.arithmetic_brownian_motion(mu=0.1, sigma=1.0, X0=100, T=1.0, dt=0.01)
-    print("Arithmetic Brownian Motion Simulated.")
 
     # GBM Example
     gbm_process = MarketSimulation.geometric_brownian_motion(mu=0.1, sigma=0.2, X0=100, T=1.0, dt=0.01)

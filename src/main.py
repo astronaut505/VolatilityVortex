@@ -30,28 +30,33 @@ def run_simulation():
     jump_diffusion = MarketSimulation.jump_diffusion_model(mu=0.1, sigma=1.5, lambda_=0.5, jump_mean=5, jump_std=2, X0=100, T=T, dt=dt)
     heston_prices, heston_vols = MarketSimulation.heston_model(mu=0.05, kappa=2.0, theta=0.04, xi=0.1, V0=0.04, X0=100, T=T, dt=dt)
 
-    # Integrate ABM/GBM and Poisson-based trade arrivals
-    abm_prices = MarketSimulation.arithmetic_brownian_motion(mu=0.1, sigma=1.0, X0=100, T=T, dt=dt)
-    gbm_prices = MarketSimulation.geometric_brownian_motion(mu=0.1, sigma=1.0, X0=100, T=T, dt=dt)
+    # Generate dynamic features based on market data
+    features = [np.mean(ou_process), np.std(jump_diffusion), np.max(heston_vols)]  # Example features
 
-    trade_arrivals = OrderExecution.simulate_trade_arrivals(lambda_rate=0.5, T=T, dt=dt)
+    # Replace machine learning-based strategy with a logical rule-based approach
+    # Calculate bid and ask spreads based on market volatility and inventory levels
+    market_volatility = np.std(ou_process)  # Example: standard deviation of OU process
+    inventory_level = 50  # Example: current inventory level
 
-    # Pricing Strategy (Dummy Example)
-    features = np.array([1.0, 2.0, 3.0])
-    class DummyModel:
-        def predict(self, features):
-            return [0.01, 0.02]  # Dummy bid and ask spreads
-    model = DummyModel()
-    bid, ask = PricingStrategy.machine_learning_based_strategy(features, model)
+    # Define bid and ask spreads based on logical rules
+    bid_spread = 0.01 + 0.1 * market_volatility - 0.001 * inventory_level
+    ask_spread = 0.02 + 0.1 * market_volatility + 0.001 * inventory_level
 
-    # Order Execution (Dummy Example)
+    # Ensure spreads are non-negative
+    bid_spread = max(bid_spread, 0.001)
+    ask_spread = max(ask_spread, 0.001)
+
+    # Assign calculated spreads to bid and ask
+    bid, ask = bid_spread, ask_spread
+
+    # Order Execution
     adjusted_size = OrderExecution.adaptive_execution(order_size=100, market_volatility=0.2, risk_tolerance=0.5)
 
-    # Risk Management (Dummy Example)
+    # Risk Management
     returns = np.random.normal(0.02, 0.01, time_steps)
     metrics = RiskManagement.risk_adjusted_metrics(returns, risk_free_rate=0.01)
 
-    # Extensibility (Dummy Examples)
+    # Extensibility
     combined_output = Extensibility.hybrid_model(traditional_model_output=0.05, ml_model_output=0.08, weight=0.6)
     impact_score = Extensibility.behavioral_analysis(trader_actions=[1, -1, 1, 1, -1], market_conditions=[0.5, -0.2, 0.3, 0.4, -0.1])
     avg_spread, avg_depth = Extensibility.microstructure_analysis(order_book_data=[
@@ -63,13 +68,17 @@ def run_simulation():
     # Generate CSV Output
     with open("simulation_results.csv", "w", newline="") as csvfile:
         fieldnames = [
-            "Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols", "ABM_Prices", "GBM_Prices", "Trade_Arrivals",
+            "Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols",
             "Bid", "Ask", "Adjusted_Size", "Sharpe_Ratio", "Sortino_Ratio", "Combined_Output", "Behavioral_Impact_Score",
-            "Avg_Spread", "Avg_Depth"
+            "Avg_Spread", "Avg_Depth", "Trade_Arrivals"  # Added Trade_Arrivals
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
+        # Simulate Trade Arrivals
+        trade_arrivals = OrderExecution.simulate_trade_arrivals(lambda_rate=50, T=1, dt=0.01)
+
+        # Include Trade_Arrivals in the writerow
         for t in range(time_steps):
             writer.writerow({
                 "Time": time[t],
@@ -77,9 +86,6 @@ def run_simulation():
                 "Jump_Diffusion": jump_diffusion[t],
                 "Heston_Prices": heston_prices[t],
                 "Heston_Vols": heston_vols[t],
-                "ABM_Prices": abm_prices[t],
-                "GBM_Prices": gbm_prices[t],
-                "Trade_Arrivals": trade_arrivals[t],
                 "Bid": bid,
                 "Ask": ask,
                 "Adjusted_Size": adjusted_size,
@@ -88,7 +94,8 @@ def run_simulation():
                 "Combined_Output": combined_output,
                 "Behavioral_Impact_Score": impact_score,
                 "Avg_Spread": avg_spread,
-                "Avg_Depth": avg_depth
+                "Avg_Depth": avg_depth,
+                "Trade_Arrivals": trade_arrivals[t]  # Added Trade_Arrivals
             })
 
     print("Simulation completed. Results saved to simulation_results.csv.")
