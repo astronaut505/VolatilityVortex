@@ -9,18 +9,22 @@ The Volatility Vortex project is a student-driven initiative designed to explore
 ## What We Did
 
 ### 1. **Market Simulation**
+
 - Implemented advanced models like Ornstein-Uhlenbeck, Jump Diffusion, and Heston to simulate realistic market conditions.
 - Added flexibility for future extensions, like incorporating new stochastic models.
 
 ### 2. **Trade Execution**
+
 - Simulated trade arrivals using a Poisson process.
 - Modeled execution probabilities based on quote distances, with room for customization.
 
 ### 3. **Optimization Goals**
+
 - Balanced profit and risk by optimizing quoting strategies.
 - Included inventory penalties to discourage excessive risk-taking.
 
 ### 4. **Analysis**
+
 - Visualized PnL distributions, inventory trajectories, and sensitivity to parameters.
 - Used interactive dashboards for better understanding of results.
 

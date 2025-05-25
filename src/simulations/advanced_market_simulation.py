@@ -1,5 +1,5 @@
 # Advanced Market Simulation Engine
-# This script implements advanced market simulation models, including Ornstein-Uhlenbeck, Jump Diffusion, Heston, and GBM models.
+# This script implements advanced market simulation models, including Ornstein-Uhlenbeck, Jump Diffusion, and Heston models.
 
 import numpy as np
 
@@ -50,26 +50,6 @@ class MarketSimulation:
         return X, V
 
     @staticmethod
-    def geometric_brownian_motion(mu, sigma, X0, T, dt):
-        """
-        Simulates Geometric Brownian Motion (GBM).
-
-        :param mu: Drift.
-        :param sigma: Volatility.
-        :param X0: Initial price.
-        :param T: Total time.
-        :param dt: Time step.
-        :return: Simulated price path.
-        """
-        n = int(T / dt)
-        X = np.zeros(n)
-        X[0] = X0
-        for t in range(1, n):
-            dW = np.random.normal(0, np.sqrt(dt))
-            X[t] = X[t-1] * np.exp((mu - 0.5 * sigma**2) * dt + sigma * dW)
-        return X
-
-    @staticmethod
     def monte_carlo_simulation(simulation_func, params, num_simulations):
         """
         Runs Monte Carlo simulations for a given market simulation function.
@@ -98,11 +78,3 @@ if __name__ == "__main__":
     # Heston Model Example
     heston_prices, heston_vols = MarketSimulation.heston_model(mu=0.05, kappa=2.0, theta=0.04, xi=0.1, V0=0.04, X0=100, T=1.0, dt=0.01)
     print("Heston Model Simulated.")
-
-    # GBM Example
-    gbm_process = MarketSimulation.geometric_brownian_motion(mu=0.1, sigma=0.2, X0=100, T=1.0, dt=0.01)
-    print("Geometric Brownian Motion Simulated.")
-
-    # Monte Carlo Simulation Example
-    mc_results = MarketSimulation.monte_carlo_simulation(MarketSimulation.geometric_brownian_motion, {'mu': 0.1, 'sigma': 0.2, 'X0': 100, 'T': 1.0, 'dt': 0.01}, num_simulations=10)
-    print("Monte Carlo Simulations Completed.")
