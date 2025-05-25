@@ -107,3 +107,23 @@ The Volatility Vortex project is a comprehensive framework designed to tackle th
 ## Conclusion
 
 The Volatility Vortex project not only meets but exceeds the requirements outlined in `project.md`. By combining advanced modeling techniques, robust simulation frameworks, and comprehensive analysis tools, it provides a powerful platform for exploring optimal market-making strategies. Whether you're a researcher, practitioner, or just someone who loves a good stochastic process, this project has something for you.
+
+---
+
+## Final PnL Analysis
+
+The final PnL (Profit and Loss) is a critical metric for evaluating the performance of the market-making strategy. Below is a summary of the PnL analysis:
+
+### Summary Statistics
+- **Mean**: Provides the average PnL across all simulations.
+- **Standard Deviation**: Indicates the variability in PnL.
+- **Minimum and Maximum**: Show the range of PnL values.
+
+### Visualization
+The PnL distribution is visualized as a histogram, highlighting the frequency of different PnL values. This helps in understanding the risk and reward profile of the strategy.
+
+### Key Insights
+- The PnL distribution provides insights into the profitability and risk of the market-making strategy.
+- Outliers, if any, can indicate extreme market conditions or strategy inefficiencies.
+
+> **Note**: The PnL data is directly loaded from the `simulation_results.csv` file, ensuring consistency with the simulation outputs.

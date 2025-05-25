@@ -70,7 +70,7 @@ def run_simulation():
         fieldnames = [
             "Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols",
             "Bid", "Ask", "Adjusted_Size", "Sharpe_Ratio", "Sortino_Ratio", "Combined_Output", "Behavioral_Impact_Score",
-            "Avg_Spread", "Avg_Depth", "Trade_Arrivals"  # Added Trade_Arrivals
+            "Avg_Spread", "Avg_Depth", "Trade_Arrivals", "PnL"  # Added PnL
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -78,7 +78,10 @@ def run_simulation():
         # Simulate Trade Arrivals
         trade_arrivals = OrderExecution.simulate_trade_arrivals(lambda_rate=50, T=1, dt=0.01)
 
-        # Include Trade_Arrivals in the writerow
+        # Calculate PnL for each time step
+        pnl = [heston_prices[t] - heston_prices[0] for t in range(time_steps)]
+
+        # Include PnL in the writerow
         for t in range(time_steps):
             writer.writerow({
                 "Time": time[t],
@@ -95,7 +98,8 @@ def run_simulation():
                 "Behavioral_Impact_Score": impact_score,
                 "Avg_Spread": avg_spread,
                 "Avg_Depth": avg_depth,
-                "Trade_Arrivals": trade_arrivals[t]  # Added Trade_Arrivals
+                "Trade_Arrivals": trade_arrivals[t],
+                "PnL": pnl[t]  # Added PnL
             })
 
     print("Simulation completed. Results saved to simulation_results.csv.")
