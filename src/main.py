@@ -71,7 +71,7 @@ def run_simulation():
             "Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols",
             "Bid", "Ask", "Adjusted_Size", "Sharpe_Ratio_OU", "Sortino_Ratio_OU", "Sharpe_Ratio_Jump", "Sortino_Ratio_Jump",
             "Sharpe_Ratio_Heston", "Sortino_Ratio_Heston", "Combined_Output", "Behavioral_Impact_Score",
-            "Avg_Spread", "Avg_Depth", "Trade_Arrivals", "PnL_OU", "PnL_Jump", "PnL_Heston"  # Separate PnL columns
+            "Avg_Spread", "Avg_Depth", "Trade_Arrivals", "PnL_OU", "PnL_Jump", "PnL_Heston", "Inventory"  # Separate PnL columns
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -89,7 +89,16 @@ def run_simulation():
         metrics_jump = RiskManagement.risk_adjusted_metrics(np.array(pnl_jump), risk_free_rate=0.01)
         metrics_heston = RiskManagement.risk_adjusted_metrics(np.array(pnl_heston), risk_free_rate=0.01)
 
-        # Include model-specific metrics in the writerow
+        # Dynamic Inventory Calculation
+        inventory = [100]  # Initial inventory level
+        for t in range(1, time_steps):
+            trade_impact = trade_arrivals[t] * (1 if np.random.rand() > 0.5 else -1)  # Random buy/sell impact
+            inventory.append(inventory[-1] + trade_impact)
+
+        # Ensure inventory levels remain non-negative
+        inventory = [max(0, inv) for inv in inventory]
+
+        # Include inventory in the writerow
         for t in range(time_steps):
             writer.writerow({
                 "Time": time[t],
@@ -113,7 +122,8 @@ def run_simulation():
                 "Trade_Arrivals": trade_arrivals[t],
                 "PnL_OU": pnl_ou[t],
                 "PnL_Jump": pnl_jump[t],
-                "PnL_Heston": pnl_heston[t]
+                "PnL_Heston": pnl_heston[t],
+                "Inventory": inventory[t]  # Add inventory data
             })
 
     print("Simulation completed. Results saved to simulation_results.csv.")

@@ -99,6 +99,20 @@ class OrderExecution:
         result = minimize(objective, initial_guess, bounds=bounds)
         return result.x if result.success else (None, None)
 
+    @staticmethod
+    def calculate_inventory(initial_inventory, trade_arrivals):
+        """
+        Dynamically calculates inventory levels based on trade arrivals.
+
+        :param initial_inventory: Starting inventory level.
+        :param trade_arrivals: Array of trade arrivals.
+        :return: Array of inventory levels over time.
+        """
+        inventory = [initial_inventory]
+        for trades in trade_arrivals:
+            inventory.append(inventory[-1] - trades)
+        return inventory
+
 # Example usage (can be removed or commented out in production):
 if __name__ == "__main__":
     # Adaptive Execution Example
@@ -128,3 +142,9 @@ if __name__ == "__main__":
     optimal_distances = OrderExecution.calculate_optimal_quote_distances(mid_price=100,
         execution_prob_func=mock_execution_prob_func, inventory_penalty=0.1, risk_aversion=0.5)
     print(f"Optimal Bid/Ask Quote Distances: {optimal_distances}")
+
+    # Inventory Calculation Example
+    initial_inventory = 10
+    trade_arrivals = [5, 2, 3, 0, 1]  # Example trade arrivals
+    inventory_levels = OrderExecution.calculate_inventory(initial_inventory, trade_arrivals)
+    print(f"Inventory Levels: {inventory_levels}")
