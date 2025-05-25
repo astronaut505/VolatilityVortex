@@ -70,7 +70,7 @@ def run_simulation():
         fieldnames = [
             "Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols",
             "Bid", "Ask", "Adjusted_Size", "Sharpe_Ratio", "Sortino_Ratio", "Combined_Output", "Behavioral_Impact_Score",
-            "Avg_Spread", "Avg_Depth", "Trade_Arrivals", "PnL"  # Added PnL
+            "Avg_Spread", "Avg_Depth", "Trade_Arrivals", "PnL"  # Single PnL column
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
