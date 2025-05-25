@@ -70,7 +70,7 @@ def run_simulation():
         fieldnames = [
             "Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols",
             "Bid", "Ask", "Adjusted_Size", "Sharpe_Ratio", "Sortino_Ratio", "Combined_Output", "Behavioral_Impact_Score",
-            "Avg_Spread", "Avg_Depth", "Trade_Arrivals", "PnL"  # Single PnL column
+            "Avg_Spread", "Avg_Depth", "Trade_Arrivals", "PnL_OU", "PnL_Jump", "PnL_Heston"  # Separate PnL columns
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -78,8 +78,10 @@ def run_simulation():
         # Simulate Trade Arrivals
         trade_arrivals = OrderExecution.simulate_trade_arrivals(lambda_rate=50, T=1, dt=0.01)
 
-        # Calculate PnL for each time step
-        pnl = [heston_prices[t] - heston_prices[0] for t in range(time_steps)]
+        # Calculate PnL for each model
+        pnl_ou = [ou_process[t] - ou_process[0] for t in range(time_steps)]
+        pnl_jump = [jump_diffusion[t] - jump_diffusion[0] for t in range(time_steps)]
+        pnl_heston = [heston_prices[t] - heston_prices[0] for t in range(time_steps)]
 
         # Include PnL in the writerow
         for t in range(time_steps):
@@ -99,7 +101,9 @@ def run_simulation():
                 "Avg_Spread": avg_spread,
                 "Avg_Depth": avg_depth,
                 "Trade_Arrivals": trade_arrivals[t],
-                "PnL": pnl[t]  # Added PnL
+                "PnL_OU": pnl_ou[t],
+                "PnL_Jump": pnl_jump[t],
+                "PnL_Heston": pnl_heston[t]  # Separate PnL values
             })
 
     print("Simulation completed. Results saved to simulation_results.csv.")
