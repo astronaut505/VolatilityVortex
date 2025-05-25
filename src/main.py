@@ -69,7 +69,8 @@ def run_simulation():
     with open("simulation_results.csv", "w", newline="") as csvfile:
         fieldnames = [
             "Time", "OU_Process", "Jump_Diffusion", "Heston_Prices", "Heston_Vols",
-            "Bid", "Ask", "Adjusted_Size", "Sharpe_Ratio", "Sortino_Ratio", "Combined_Output", "Behavioral_Impact_Score",
+            "Bid", "Ask", "Adjusted_Size", "Sharpe_Ratio_OU", "Sortino_Ratio_OU", "Sharpe_Ratio_Jump", "Sortino_Ratio_Jump",
+            "Sharpe_Ratio_Heston", "Sortino_Ratio_Heston", "Combined_Output", "Behavioral_Impact_Score",
             "Avg_Spread", "Avg_Depth", "Trade_Arrivals", "PnL_OU", "PnL_Jump", "PnL_Heston"  # Separate PnL columns
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -83,7 +84,12 @@ def run_simulation():
         pnl_jump = [jump_diffusion[t] - jump_diffusion[0] for t in range(time_steps)]
         pnl_heston = [heston_prices[t] - heston_prices[0] for t in range(time_steps)]
 
-        # Include PnL in the writerow
+        # Calculate Sharpe and Sortino ratios for each model
+        metrics_ou = RiskManagement.risk_adjusted_metrics(np.array(pnl_ou), risk_free_rate=0.01)
+        metrics_jump = RiskManagement.risk_adjusted_metrics(np.array(pnl_jump), risk_free_rate=0.01)
+        metrics_heston = RiskManagement.risk_adjusted_metrics(np.array(pnl_heston), risk_free_rate=0.01)
+
+        # Include model-specific metrics in the writerow
         for t in range(time_steps):
             writer.writerow({
                 "Time": time[t],
@@ -94,8 +100,12 @@ def run_simulation():
                 "Bid": bid,
                 "Ask": ask,
                 "Adjusted_Size": adjusted_size,
-                "Sharpe_Ratio": metrics["Sharpe Ratio"],
-                "Sortino_Ratio": metrics["Sortino Ratio"],
+                "Sharpe_Ratio_OU": metrics_ou["Sharpe Ratio"],
+                "Sortino_Ratio_OU": metrics_ou["Sortino Ratio"],
+                "Sharpe_Ratio_Jump": metrics_jump["Sharpe Ratio"],
+                "Sortino_Ratio_Jump": metrics_jump["Sortino Ratio"],
+                "Sharpe_Ratio_Heston": metrics_heston["Sharpe Ratio"],
+                "Sortino_Ratio_Heston": metrics_heston["Sortino Ratio"],
                 "Combined_Output": combined_output,
                 "Behavioral_Impact_Score": impact_score,
                 "Avg_Spread": avg_spread,
@@ -103,7 +113,7 @@ def run_simulation():
                 "Trade_Arrivals": trade_arrivals[t],
                 "PnL_OU": pnl_ou[t],
                 "PnL_Jump": pnl_jump[t],
-                "PnL_Heston": pnl_heston[t]  # Separate PnL values
+                "PnL_Heston": pnl_heston[t]
             })
 
     print("Simulation completed. Results saved to simulation_results.csv.")
