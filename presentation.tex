@@ -1,0 +1,108 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{beamerthemesplit}
+\usetheme{Warsaw}
+\geometry{a4paper, margin=1in}
+
+\title{Volatility Vortex: A Comprehensive Study on Optimal Market Making}
+\author{Team Members: Presenter 1, Presenter 2, Presenter 3, Presenter 4}
+\date{May 27, 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This paper presents the "Volatility Vortex" project, a comprehensive exploration of optimal market-making strategies. By leveraging advanced market simulation models, risk management techniques, and order execution strategies, the project aims to provide insights into the challenges and opportunities in market making. The study focuses on inventory and execution risks, with results visualized through dynamic inventory trajectories and sensitivity analyses.
+\end{abstract}
+
+\section{Introduction}
+Market making is a critical component of financial markets, providing liquidity and ensuring efficient price discovery. The "Volatility Vortex" project aims to explore the complexities of market making by simulating realistic market conditions, analyzing risks, and optimizing quoting strategies. This study focuses on the Optimal Market Making problem, which involves balancing profit and risk while managing inventory and execution uncertainties.
+
+\subsection{Objectives}
+\begin{itemize}
+    \item Simulate financial markets using advanced stochastic models.
+    \item Analyze inventory and execution risks in market making.
+    \item Optimize quoting strategies to balance profit and risk.
+\end{itemize}
+
+\section{Simulation Models}
+\subsection{Ornstein-Uhlenbeck Process}
+The Ornstein-Uhlenbeck process models mean-reverting price dynamics, making it suitable for assets that tend to revert to a long-term mean. The process is defined as:
+\begin{equation}
+    dX_t = \theta(\mu - X_t)dt + \sigma dW_t
+\end{equation}
+where $\theta$ is the rate of mean reversion, $\mu$ is the long-term mean, $\sigma$ is the volatility, and $dW_t$ is a Wiener process.
+
+\subsection{Jump Diffusion Model}
+The Jump Diffusion model introduces sudden price jumps to mimic real-world market shocks. It is defined as:
+\begin{equation}
+    dX_t = \mu dt + \sigma dW_t + J_t dN_t
+\end{equation}
+where $\mu$ is the drift, $\sigma$ is the volatility, $J_t$ is the jump size, and $dN_t$ is a Poisson process.
+
+\subsection{Heston Model}
+The Heston model simulates stochastic volatility, capturing the dynamic nature of market conditions. It is defined as:
+\begin{align}
+    dX_t &= \mu X_t dt + \sqrt{V_t} X_t dW_t \\
+    dV_t &= \kappa(\theta - V_t)dt + \xi \sqrt{V_t} dZ_t
+\end{align}
+where $V_t$ is the variance, $\kappa$ is the rate of mean reversion for variance, $\theta$ is the long-term variance, and $\xi$ is the volatility of variance.
+
+\section{Risk Management and Order Execution}
+\subsection{Risk Management Techniques}
+Risk management is crucial in market making to ensure sustainable profitability. The project employs:
+\begin{itemize}
+    \item \textbf{Sharpe Ratio}: Measures risk-adjusted returns.
+    \item \textbf{Sortino Ratio}: Focuses on downside risk.
+    \item Stress testing to evaluate portfolio robustness under extreme scenarios.
+\end{itemize}
+
+\subsection{Order Execution Strategies}
+Efficient order execution minimizes costs and slippage. The project implements:
+\begin{itemize}
+    \item \textbf{Adaptive Execution}: Adjusts order sizes based on market conditions.
+    \item \textbf{Market Impact Models}: Accounts for price slippage due to large orders.
+    \item Dynamic inventory calculation to manage inventory risk.
+\end{itemize}
+
+\section{Results and Visualization}
+\subsection{Key Findings}
+The simulation results highlight the trade-offs between profit and risk in market making. Key findings include:
+\begin{itemize}
+    \item The Ornstein-Uhlenbeck model provides stable returns with low risk.
+    \item The Jump Diffusion model captures market shocks but introduces higher volatility.
+    \item The Heston model reflects dynamic market conditions but requires careful parameter tuning.
+\end{itemize}
+
+\subsection{Visualization}
+The project visualizes:
+\begin{itemize}
+    \item Inventory trajectories to understand inventory risk over time.
+    \item Sensitivity analysis of quoting strategies to risk aversion.
+    \item PnL distributions for each simulation model.
+\end{itemize}
+
+\section{Additional Features and Implementations}
+\subsection{Dynamic Inventory Calculation}
+The project includes a dynamic inventory calculation method implemented in the \texttt{OrderExecution} class. This method calculates inventory levels based on trade arrivals, providing insights into inventory risk over time.
+
+\subsection{PnL and Risk Metrics}
+The system calculates Profit and Loss (PnL) for each simulation model (Ornstein-Uhlenbeck, Jump Diffusion, and Heston) and evaluates risk-adjusted metrics such as Sharpe and Sortino ratios. These metrics are dynamically computed for each model using their respective PnL data.
+
+\subsection{Stress Testing}
+Stress testing is implemented to evaluate portfolio robustness under extreme market scenarios. This feature allows for the analysis of how different stress scenarios impact portfolio values.
+
+\subsection{Extensibility Features}
+The project includes tools for hybrid modeling, behavioral analysis, and market microstructure analysis. These features are implemented in the \texttt{Extensibility} module, enabling advanced research and experimentation.
+
+\subsection{Visualization}
+The project provides visualizations for inventory trajectories, sensitivity analysis, and PnL distributions. These visualizations are implemented in the accompanying Jupyter notebook, offering an interactive way to explore the results.
+
+\section{Conclusion}
+The "Volatility Vortex" project provides a comprehensive framework for exploring market-making strategies. By integrating advanced simulation models, risk management techniques, and order execution strategies, the project offers valuable insights into the complexities of market making. The findings underscore the importance of balancing profit and risk while managing inventory and execution uncertainties.
+
+\end{document}
